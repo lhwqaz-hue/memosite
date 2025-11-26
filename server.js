@@ -25,11 +25,19 @@ setInterval(() => {
 
 // 미들웨어
 app.use(bodyParser.json());
-app.use(express.static(path.join(__dirname)));
 
 // 루트 경로에서 index.html 제공
 app.get('/', (req, res) => {
     res.sendFile(path.join(__dirname, 'index.html'));
+});
+
+// 정적 파일 제공
+app.get('/styles.css', (req, res) => {
+    res.sendFile(path.join(__dirname, 'styles.css'));
+});
+
+app.get('/app.js', (req, res) => {
+    res.sendFile(path.join(__dirname, 'app.js'));
 });
 
 // 키 검증 (4자 이상)
