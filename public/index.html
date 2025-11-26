@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>간편 메모 공유</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body data-theme="light">
+    <!-- 메모장 화면 (항상 표시) -->
+    <div class="header">
+        <div class="header-left">
+            <h1 class="logo">Phyiv Memo</h1>
+            <!-- 검색 바 -->
+            <div class="search-bar-inline">
+                <input 
+                    type="text" 
+                    id="search-input" 
+                    placeholder="검색... (↓↑)"
+                    autocomplete="off"
+                >
+                <span id="search-count" class="search-count"></span>
+                <button id="clear-search-btn" class="clear-btn" title="검색 지우기">✕</button>
+            </div>
+        </div>
+        <div class="header-right">
+            <div class="password-info">
+                <button id="key-button" class="key-button" title="클릭하여 키 설정/변경">KEY</button>
+            </div>
+            <div class="timer-info" id="timer-info" style="display: none;">
+                <button id="timer-button" class="timer-button" title="클릭하여 유효시간 설정">
+                    <span id="timer-display">⏱️ --:--</span>
+                </button>
+            </div>
+            <button id="theme-toggle" class="theme-toggle" title="테마 전환">DARK</button>
+        </div>
+    </div>
+    
+    <!-- 검색 바 (이제 헤더에 통합됨) -->
+    <div class="search-bar" style="display: none;">
+        <input 
+            type="text" 
+            id="search-input" 
+            placeholder="메모에서 검색... (↓↑ 키로 이동)"
+            autocomplete="off"
+        >
+        <span id="search-count" class="search-count"></span>
+        <button id="clear-search-btn" class="clear-btn" title="검색 지우기">✕</button>
+    </div>
+    
+    <div class="memo-container">
+        <div id="highlight-layer" class="highlight-layer"></div>
+        <textarea 
+            id="memo-editor" 
+            placeholder="여기에 메모를 작성하세요..."
+            spellcheck="false"
+        ></textarea>
+    </div>
+    
+    <div class="status-bar">
+        <span id="save-status"></span>
+        <div class="char-count-group">
+            <span id="char-count">0자</span>
+            <span class="char-count-divider">|</span>
+            <span id="char-count-no-space">0자(공백제외)</span>
+        </div>
+    </div>
+
+    <!-- 키 입력 팝업 모달 -->
+    <div id="key-modal" class="modal active">
+        <div class="modal-content" style="user-select: none;">
+            <button id="close-modal-btn" class="close-modal-btn" title="닫기">✕</button>
+            <h1>Phyiv Memo</h1>
+            <p class="subtitle">키로 메모를 공유하세요</p>
+            
+            <!-- 키 설정 영역 -->
+            <div class="key-section">
+                <h2>🔑 새 키 설정</h2>
+                <div class="key-input-group">
+                    <input 
+                        type="text" 
+                        id="set-key-input" 
+                        placeholder="4자 이상"
+                        autocomplete="off"
+                        style="user-select: text;"
+                    >
+                    <button id="set-key-btn">설정</button>
+                </div>
+                <p id="set-key-error" class="error-message"></p>
+            </div>
+
+            <div class="divider">또는</div>
+            
+            <!-- 키 불러오기 영역 -->
+            <div class="key-section">
+                <h2>📥 키 불러오기</h2>
+                <div class="key-input-group">
+                    <input 
+                        type="text" 
+                        id="load-key-input" 
+                        placeholder="키 입력"
+                        autocomplete="off"
+                        style="user-select: text;"
+                    >
+                    <button id="load-key-btn">불러오기</button>
+                </div>
+                <p id="load-key-error" class="error-message"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- 유효시간 설정 모달 -->
+    <div id="duration-modal" class="modal">
+        <div class="modal-content modal-small">
+            <button id="close-duration-modal-btn" class="close-modal-btn" title="닫기">✕</button>
+            <h2>⏱️ 유효시간 설정</h2>
+            <p class="subtitle">메모의 유효시간을 변경하세요</p>
+            <div class="duration-options">
+                <button class="duration-option" data-minutes="5">5분</button>
+                <button class="duration-option" data-minutes="10">10분</button>
+                <button class="duration-option" data-minutes="30">30분</button>
+                <button class="duration-option" data-minutes="60">1시간</button>
+                <button class="duration-option" data-minutes="180">3시간</button>
+                <button class="duration-option" data-minutes="360">6시간</button>
+                <button class="duration-option" data-minutes="720">12시간</button>
+                <button class="duration-option" data-minutes="1440">24시간</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
