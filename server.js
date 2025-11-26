@@ -27,6 +27,11 @@ setInterval(() => {
 app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// 루트 경로에서 index.html 제공
+app.get('/', (req, res) => {
+    res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 // 키 검증 (4자 이상)
 function isValidPassword(password) {
     return typeof password === 'string' && 
