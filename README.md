@@ -42,9 +42,21 @@ PC와 모바일 간 간단한 텍스트 공유를 위한 웹 애플리케이션�
 - **테마 전환**: 오른쪽 상단 테마 버튼 (🌙/☀️)
 - **로컬 모드**: 키 설정 없이 로컬에서만 사용
 
-## 설치 및 실행
+## 빠른 시작 (웹 배포)
 
-### 필수 요구사항
+### Vercel로 배포 (권장)
+
+[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/lhwqaz-hue/memosite)
+
+1. 위 버튼 클릭
+2. GitHub 계정으로 로그인
+3. 프로젝트 이름 설정
+4. Deploy 클릭
+5. 완료! URL로 접속 가능
+
+### 로컬 실행
+
+#### 필수 요구사항
 - Node.js (v14 이상)
 - npm 또는 yarn
 
