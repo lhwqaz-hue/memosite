@@ -2,6 +2,8 @@
 
 PC와 모바일 간 간단한 텍스트 공유를 위한 웹 애플리케이션입니다. 로그인 없이 키만으로 메모를 공유할 수 있습니다.
 
+**🚀 서버 없이 Supabase만으로 작동합니다!**
+
 ## 주요 기능
 
 - 🔑 **키 기반 공유**: 4자 이상의 간단한 키로 메모 공유
@@ -12,6 +14,7 @@ PC와 모바일 간 간단한 텍스트 공유를 위한 웹 애플리케이션�
 - 📱 **모바일 최적화**: 반응형 디자인
 - 📊 **글자 수 카운터**: 공백 포함/제외 구분 표시
 - 🏠 **로컬 모드**: 키 없이도 로컬 전용으로 사용 가능
+- ☁️ **서버리스**: Supabase만으로 완전히 작동
 
 ## 스크린샷
 
@@ -42,74 +45,57 @@ PC와 모바일 간 간단한 텍스트 공유를 위한 웹 애플리케이션�
 - **테마 전환**: 오른쪽 상단 테마 버튼 (🌙/☀️)
 - **로컬 모드**: 키 설정 없이 로컬에서만 사용
 
-## 빠른 시작 (웹 배포)
+## 빠른 시작 (정적 호스팅)
 
-### Supabase + Vercel로 배포 (권장)
+### 1. Supabase 설정
 
-#### 1. Supabase 설정
-
-1. [Supabase](https://supabase.com)에서 새 프로젝트 생성
+1. [Supabase](https://supabase.com)에서 새 프로젝트 생성 (무료)
 2. SQL Editor에서 `supabase-setup.sql` 파일의 내용 실행
 3. Settings > API에서 다음 정보 확인:
-   - `Project URL` (SUPABASE_URL)
-   - `anon public` key (SUPABASE_ANON_KEY)
+   - `Project URL` (예: https://xxxxx.supabase.co)
+   - `anon public` key
 
-#### 2. Vercel 배포
+### 2. 배포 방법
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/lhwqaz-hue/memosite)
+#### GitHub Pages (무료, 가장 간단)
+1. 이 저장소를 Fork
+2. Settings > Pages에서 Source를 `main` branch로 설정
+3. 완료! `https://your-username.github.io/memosite`로 접속
+4. 첫 실행 시 Supabase URL과 Key를 입력하면 localStorage에 저장됨
 
-1. 위 버튼 클릭
-2. GitHub 계정으로 로그인
-3. 프로젝트 이름 설정
-4. Environment Variables 추가:
-   - `SUPABASE_URL`: Supabase 프로젝트 URL
-   - `SUPABASE_ANON_KEY`: Supabase anon key
-5. Deploy 클릭
-6. 완료! URL로 접속 가능
+#### Vercel (무료, 권장)
+1. [Vercel](https://vercel.com) 접속
+2. GitHub 저장소 연결
+3. Deploy 클릭
+4. 완료! 제공된 URL로 접속
+
+#### Netlify (무료)
+1. [Netlify](https://netlify.com) 접속
+2. Drag & Drop으로 폴더 업로드 (index.html, styles.css, app-supabase.js)
+3. 완료!
+
+**서버가 필요 없습니다!** 정적 파일만으로 작동합니다.
 
 ### 로컬 실행
 
-#### 필수 요구사항
-- Node.js (v14 이상)
-- npm 또는 yarn
-- Supabase 계정
+단순히 `index.html` 파일을 브라우저에서 열면 됩니다!
 
-### 설치
 ```bash
 # 저장소 클론
 git clone https://github.com/lhwqaz-hue/memosite.git
 cd memosite
 
-# 의존성 설치
-npm install
-
-# .env 파일 생성
-cp .env.example .env
-# .env 파일을 열어 Supabase 정보 입력:
-# SUPABASE_URL=your_supabase_project_url
-# SUPABASE_ANON_KEY=your_supabase_anon_key
-
-# 서버 실행
-npm start
+# 브라우저에서 index.html 열기
+# 또는 Live Server 등 사용
 ```
 
-### 실행
-```bash
-# 프로덕션 모드
-npm start
-
-# 개발 모드 (자동 재시작)
-npm run dev
-```
-
-서버가 시작되면 `http://localhost:3000`에서 접속 가능합니다.
+첫 실행 시 Supabase URL과 Key를 입력하면 localStorage에 자동 저장됩니다.
 
 ## 기술 스택
 
-### 백엔드
-- **Node.js**: 서버 런타임
-- **Express**: 웹 프레임워크
-- **In-Memory Storage**: 빠른 데이터 접근
+### 데이터베이스
+- **Supabase**: PostgreSQL 기반 실시간 데이터베이스 (무료)
+- **Row Level Security**: 보안 설정 (비활성화 - 간단한 앱)
 
 ### 프론트엔드
 - **Vanilla JavaScript**: 프레임워크 없는 순수 JS
@@ -141,57 +127,68 @@ memosite/
 ```
 
 ### `POST /api/memo`
-새 메모 생성
-```json
-{
-  "password": "키값",
-  "content": "메모 내용"
-}
+## 사용 방법 (상세)
+
+### 초기 설정
+1. 웹사이트 첫 접속 시 Supabase URL과 Key 입력 프롬프트 표시
+2. Supabase 정보는 브라우저 localStorage에 안전하게 저장
+3. 이후 자동으로 연결됨
+
+### 메모 생성 및 공유
+1. **키 설정**: 4자 이상의 고유한 키 생성
+2. **메모 작성**: 자동 저장 (0.5초마다)
+3. **공유**: URL에 `?p=키값` 추가하여 공유
+   - 예: `https://your-site.com?p=mykey`
+
+### 로컬 모드
+- 키 설정 없이도 사용 가능
+- 데이터는 브라우저 localStorage에만 저장
+- 다른 기기와 공유 불가
+
+## 데이터베이스 구조
+
+### memos 테이블
+```sql
+- id: SERIAL PRIMARY KEY
+- password: VARCHAR(255) UNIQUE
+- content: TEXT
+- duration_minutes: INTEGER (기본값: 30)
+- created_at: TIMESTAMPTZ
+- last_updated: TIMESTAMPTZ
+- expires_at: TIMESTAMPTZ
 ```
-
-### `GET /api/memo/:password`
-메모 조회
-
-### `PUT /api/memo/:password`
-메모 업데이트 (만료시간 갱신)
-```json
-{
-  "content": "수정된 내용"
-}
-```
-
-### `DELETE /api/memo/:password`
-메모 삭제
 
 ## 주의사항
 
-⚠️ **중요**: 이 프로젝트는 교육/테스트 목적으로 제작되었습니다.
+⚠️ **중요**: 
 
-- 메모는 서버 메모리에 저장되므로 **서버 재시작 시 모든 데이터가 삭제됩니다**
-- 프로덕션 환경에서는 **Redis나 데이터베이스 사용을 권장**합니다
 - **민감한 정보는 저장하지 마세요**
-- 메모는 마지막 수정 후 설정된 시간 후 자동 삭제됩니다
+- 메모는 설정한 시간 후 자동 삭제됩니다
+- Supabase 무료 플랜 제한:
+  - 500MB 데이터베이스
+  - 월 500MB 전송량
+  - 50,000 월간 활성 사용자
+- Row Level Security가 비활성화되어 있어 키를 아는 사람은 누구나 접근 가능
 
 ## 배포
 
-### Heroku
+완전히 정적 사이트이므로 어디든 배포 가능:
+
+### GitHub Pages (무료)
 ```bash
-# Heroku CLI 설치 후
-heroku create
-git push heroku main
+Settings > Pages > Source: main branch
 ```
 
-### Vercel
+### Vercel (무료)
 ```bash
-# Vercel CLI 설치 후
-vercel
+vercel --prod
 ```
 
-### Docker
-```dockerfile
-FROM node:14
-WORKDIR /app
-COPY package*.json ./
+### Netlify (무료)
+Drag & Drop으로 배포 가능
+
+### Cloudflare Pages (무료)
+GitHub 연동 자동 배포
 RUN npm install
 COPY . .
 EXPOSE 3000
