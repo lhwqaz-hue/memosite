@@ -1,6 +1,15 @@
-// Supabase 설정 (사용자가 입력)
-let supabaseUrl = localStorage.getItem('supabaseUrl') || '';
-let supabaseKey = localStorage.getItem('supabaseKey') || '';
+// ============================================
+// Supabase 설정 - 여기에 직접 입력하세요!
+// ============================================
+const SUPABASE_CONFIG = {
+    url: '',  // 예: 'https://xxxxxxxxxxxxx.supabase.co'
+    key: ''   // 예: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+};
+// ============================================
+
+// Supabase 설정 (파일 설정 우선, 없으면 localStorage, 없으면 프롬프트)
+let supabaseUrl = SUPABASE_CONFIG.url || localStorage.getItem('supabaseUrl') || '';
+let supabaseKey = SUPABASE_CONFIG.key || localStorage.getItem('supabaseKey') || '';
 let supabase = null;
 
 // Supabase 클라이언트 초기화
@@ -15,7 +24,7 @@ function initSupabase() {
 // Supabase 설정 확인 및 요청
 function checkSupabaseConfig() {
     if (!initSupabase()) {
-        const url = prompt('Supabase Project URL을 입력하세요:');
+        const url = prompt('Supabase Project URL을 입력하세요:\n(파일에 직접 설정하려면 app-supabase.js의 SUPABASE_CONFIG를 수정하세요)');
         const key = prompt('Supabase Anon Key를 입력하세요:');
         
         if (url && key) {

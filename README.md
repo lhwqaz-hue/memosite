@@ -55,7 +55,28 @@ PC와 모바일 간 간단한 텍스트 공유를 위한 웹 애플리케이션�
    - `Project URL` (예: https://xxxxx.supabase.co)
    - `anon public` key
 
-### 2. 배포 방법
+### 2. Supabase 정보 입력 (3가지 방법)
+
+#### 방법 1: 파일에 직접 입력 (권장 - 개인 사용)
+`app-supabase.js` 파일 상단의 `SUPABASE_CONFIG` 수정:
+```javascript
+const SUPABASE_CONFIG = {
+    url: 'https://xxxxxxxxxxxxx.supabase.co',
+    key: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...'
+};
+```
+
+#### 방법 2: 첫 실행 시 프롬프트로 입력
+- 파일에 설정이 없으면 자동으로 프롬프트 표시
+- localStorage에 저장되어 다음부터는 자동 로드
+
+#### 방법 3: 브라우저 콘솔에서 설정
+```javascript
+localStorage.setItem('supabaseUrl', 'https://xxxxx.supabase.co');
+localStorage.setItem('supabaseKey', 'your_anon_key');
+```
+
+### 3. 배포 방법
 
 #### GitHub Pages (무료, 가장 간단)
 1. 이 저장소를 Fork
