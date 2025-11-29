@@ -22,6 +22,9 @@ CREATE INDEX idx_memos_expires_at ON memos(expires_at);
 -- Row Level Security (RLS) 비활성화 (간단한 앱이므로)
 ALTER TABLE memos DISABLE ROW LEVEL SECURITY;
 
+-- 기존 함수 삭제 (반환 타입 변경을 위해)
+DROP FUNCTION IF EXISTS delete_expired_memos();
+
 -- 만료된 메모 자동 삭제 함수
 CREATE OR REPLACE FUNCTION delete_expired_memos()
 RETURNS INTEGER AS $$
