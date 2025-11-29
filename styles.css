@@ -447,7 +447,7 @@ body[data-theme="dark"] .key-button:hover {
 
 #search-input {
     flex: 1;
-    padding: 8px 35px 8px 12px;
+    padding: 8px 12px;
     border: 2px solid var(--input-border);
     border-radius: 8px;
     font-size: 0.85rem;
@@ -470,9 +470,29 @@ body[data-theme="dark"] .key-button:hover {
     font-size: 0.75rem;
     color: var(--text-secondary);
     white-space: nowrap;
-    position: absolute;
-    right: 35px;
-    pointer-events: none;
+    margin: 0 5px;
+    flex-shrink: 0;
+}
+
+.search-nav-btn {
+    background: transparent;
+    border: none;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 0.7rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background 0.3s, color 0.3s;
+    color: var(--text-secondary);
+    flex-shrink: 0;
+}
+
+.search-nav-btn:hover {
+    background: var(--button-hover);
+    color: var(--text-primary);
 }
 
 .clear-btn {
@@ -488,8 +508,7 @@ body[data-theme="dark"] .key-button:hover {
     justify-content: center;
     transition: background 0.3s, color 0.3s;
     color: var(--text-secondary);
-    position: absolute;
-    right: 4px;
+    flex-shrink: 0;
 }
 
 .clear-btn:hover {
@@ -599,7 +618,7 @@ body[data-theme="dark"] .key-button:hover {
 
 #char-count-no-space {
     font-size: 0.8rem;
-    color: var(--text-tertiary);
+    color: var(--text-primary);
 }
 
 #save-status {
@@ -679,6 +698,30 @@ body[data-theme="dark"] .key-button:hover {
 }
 
 .duration-option:active {
+    transform: translateY(0);
+}
+
+.delete-key-btn {
+    width: 100%;
+    padding: 15px 20px;
+    background: #dc3545;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-size: 1rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+    margin-top: 20px;
+}
+
+.delete-key-btn:hover {
+    background: #c82333;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.3);
+}
+
+.delete-key-btn:active {
     transform: translateY(0);
 }
 

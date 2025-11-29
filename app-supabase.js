@@ -367,12 +367,21 @@ document.querySelectorAll('.duration-option').forEach(button => {
 });
 
 // 키 삭제
-async function deleteCurrentKey() {
-    if (!currentMemoPassword) return;
-    
-    if (!confirm('정말로 이 키를 삭제하시겠습니까?')) {
+const deleteKeyBtn = document.getElementById('delete-key-btn');
+
+deleteKeyBtn.addEventListener('click', async () => {
+    if (!currentMemoPassword) {
+        alert('삭제할 키가 없습니다.');
         return;
     }
+    
+    // 첫 번째 확인
+    const firstConfirm = confirm(`정말로 키 "${currentMemoPassword}"를 삭제하시겠습니까?\n\n메모 내용은 로컬에 남아있지만, Supabase의 공유 데이터는 삭제됩니다.`);
+    if (!firstConfirm) return;
+    
+    // 두 번째 확인
+    const secondConfirm = confirm('정말로 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다!');
+    if (!secondConfirm) return;
     
     try {
         const { error } = await supabase
@@ -382,13 +391,38 @@ async function deleteCurrentKey() {
         
         if (error) throw error;
         
-        alert('키가 삭제되었습니다.');
-        resetApp();
+        const content = memoEditor.value;
+        
+        alert('키가 삭제되었습니다.\n메모 내용은 로컬 모드로 전환됩니다.');
+        
+        // 로컬 모드로 전환
+        currentMemoPassword = null;
+        keyButton.textContent = '🔑 키 설정';
+        memoEditor.placeholder = '로컬 모드 (키 없이 사용)';
+        
+        // 메모 내용은 유지하고 로컬에 저장
+        if (content) {
+            localStorage.setItem('localMemo', content);
+        }
+        
+        if (timerInterval) {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+        if (timerInfo) {
+            timerInfo.style.display = 'none';
+        }
+        timerDisplay.textContent = '⏱️ --:--';
+        expiresAt = null;
+        
+        saveStatus.textContent = '로컬 저장됨';
+        hideDurationModal();
+        
     } catch (error) {
         console.error('Delete error:', error);
         alert('키 삭제에 실패했습니다.');
     }
-}
+});
 
 // 모달 관련
 function showModal() {
@@ -529,6 +563,18 @@ function navigateSearch(direction) {
     searchCount.textContent = `${currentMatchIndex + 1}/${searchMatches.length}`;
     scrollToMatch(currentMatchIndex);
 }
+
+// 검색 네비게이션 버튼
+const searchPrevBtn = document.getElementById('search-prev-btn');
+const searchNextBtn = document.getElementById('search-next-btn');
+
+searchPrevBtn.addEventListener('click', () => {
+    navigateSearch('up');
+});
+
+searchNextBtn.addEventListener('click', () => {
+    navigateSearch('down');
+});
 
 searchInput.addEventListener('input', (e) => {
     const searchTerm = e.target.value;
