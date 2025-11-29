@@ -24,12 +24,31 @@ ALTER TABLE memos DISABLE ROW LEVEL SECURITY;
 
 -- 만료된 메모 자동 삭제 함수
 CREATE OR REPLACE FUNCTION delete_expired_memos()
-RETURNS void AS $$
+RETURNS INTEGER AS $$
+DECLARE
+    deleted_count INTEGER;
 BEGIN
     DELETE FROM memos WHERE expires_at < NOW();
+    GET DIAGNOSTICS deleted_count = ROW_COUNT;
+    RETURN deleted_count;
 END;
-$$ LANGUAGE plpgsql;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
 
--- 주기적으로 만료된 메모 삭제 (선택사항)
--- Supabase Dashboard > Database > Extensions에서 pg_cron 활성화 후 사용
--- SELECT cron.schedule('delete-expired-memos', '*/5 * * * *', 'SELECT delete_expired_memos();');
+-- ============================================
+-- 자동 삭제 설정 (pg_cron 사용)
+-- ============================================
+-- 1. pg_cron 확장 활성화 (한 번만 실행)
+CREATE EXTENSION IF NOT EXISTS pg_cron;
+
+-- 2. 기존 스케줄이 있다면 삭제
+SELECT cron.unschedule('delete-expired-memos');
+
+-- 3. 5분마다 만료된 메모 자동 삭제
+SELECT cron.schedule(
+    'delete-expired-memos',           -- 작업 이름
+    '*/5 * * * *',                    -- 5분마다 실행 (크론 표현식)
+    'SELECT delete_expired_memos();'  -- 실행할 SQL
+);
+
+-- 스케줄 확인 (선택사항)
+-- SELECT * FROM cron.job;

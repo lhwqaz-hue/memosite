@@ -51,9 +51,14 @@ PC와 모바일 간 간단한 텍스트 공유를 위한 웹 애플리케이션�
 
 1. [Supabase](https://supabase.com)에서 새 프로젝트 생성 (무료)
 2. SQL Editor에서 `supabase-setup.sql` 파일의 내용 실행
+   - 테이블 생성
+   - 인덱스 생성
+   - **자동 삭제 스케줄 설정 (5분마다 만료된 메모 삭제)**
 3. Settings > API에서 다음 정보 확인:
    - `Project URL` (예: https://xxxxx.supabase.co)
    - `anon public` key
+
+💡 자동 삭제 설정에 대한 자세한 내용은 `SUPABASE_AUTO_DELETE.md` 파일을 참조하세요.
 
 ### 2. Supabase 정보 입력 (3가지 방법)
 
