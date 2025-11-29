@@ -479,7 +479,7 @@ body[data-theme="dark"] .key-button:hover {
 
 .search-controls {
     position: absolute;
-    right: 6px;
+    right: 10px;
     top: 50%;
     transform: translateY(-50%);
     display: flex;
