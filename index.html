@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>간편 메모 공유</title>
+    <title>krople memo : 로그인 없는 메모장</title>
     <link rel="stylesheet" href="styles.css">
     <!-- Supabase CDN -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
@@ -38,18 +38,6 @@
             </div>
             <button id="theme-toggle" class="theme-toggle" title="테마 전환">DARK</button>
         </div>
-    </div>
-    
-    <!-- 검색 바 (이제 헤더에 통합됨) -->
-    <div class="search-bar" style="display: none;">
-        <input 
-            type="text" 
-            id="search-input" 
-            placeholder="메모에서 검색... (↓↑ 키로 이동)"
-            autocomplete="off"
-        >
-        <span id="search-count" class="search-count"></span>
-        <button id="clear-search-btn" class="clear-btn" title="검색 지우기">✕</button>
     </div>
     
     <div class="memo-container">

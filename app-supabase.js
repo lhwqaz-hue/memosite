@@ -76,6 +76,21 @@ let searchMatches = [];
 let currentMatchIndex = -1;
 let selectedDuration = 30; // 기본 30분
 
+// 토스트 알림 함수
+function showToast(message) {
+    const toast = document.createElement('div');
+    toast.className = 'toast-notification';
+    toast.textContent = message;
+    document.body.appendChild(toast);
+    
+    setTimeout(() => toast.classList.add('show'), 10);
+    
+    setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => toast.remove(), 300);
+    }, 2000);
+}
+
 // 글자 수 업데이트 함수
 function updateCharCount(text) {
     const totalChars = text.length;
@@ -174,19 +189,7 @@ setKeyBtn.addEventListener('click', async () => {
     }
     
     try {
-        // 키 사용 가능 여부 확인
-        const { data: existingMemo, error: checkError } = await supabase
-            .from('memos')
-            .select('password')
-            .eq('password', password)
-            .single();
-        
-        if (existingMemo) {
-            setKeyError.textContent = '이미 선택된 키입니다.';
-            return;
-        }
-        
-        // 메모 생성
+        // 메모 생성 (중복 시 에러 발생)
         const now = new Date();
         const expiresAtDate = new Date(now.getTime() + 30 * 60 * 1000);
         
@@ -201,7 +204,13 @@ setKeyBtn.addEventListener('click', async () => {
             .select()
             .single();
         
-        if (insertError) throw insertError;
+        if (insertError) {
+            if (insertError.code === '23505') { // unique constraint violation
+                setKeyError.textContent = '이미 선택된 키입니다.';
+                return;
+            }
+            throw insertError;
+        }
         
         // 메모장 활성화
         currentMemoPassword = password;
@@ -385,7 +394,7 @@ deleteKeyBtn.addEventListener('click', async () => {
         
         const content = memoEditor.value;
         
-        alert('키가 삭제되었습니다.');
+        showToast('키가 삭제되었습니다');
         
         // KEY 버튼으로 초기화
         currentMemoPassword = null;
@@ -463,9 +472,9 @@ timerButton.addEventListener('click', showDurationModal);
 // 앱 초기화
 function resetApp() {
     currentMemoPassword = null;
-    keyButton.textContent = '🔑 키 설정';
+    keyButton.textContent = 'KEY';
     memoEditor.value = localStorage.getItem('localMemo') || '';
-    memoEditor.placeholder = '로컬 모드 (키 없이 사용)';
+    memoEditor.placeholder = '여기에 메모를 작성하세요...';
     lastSavedContent = '';
     updateCharCount(memoEditor.value);
     
