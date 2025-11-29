@@ -43,8 +43,14 @@ $$ LANGUAGE plpgsql SECURITY DEFINER;
 -- 1. pg_cron 확장 활성화 (한 번만 실행)
 CREATE EXTENSION IF NOT EXISTS pg_cron;
 
--- 2. 기존 스케줄이 있다면 삭제
-SELECT cron.unschedule('delete-expired-memos');
+-- 2. 기존 스케줄이 있다면 삭제 (오류 무시)
+DO $$
+BEGIN
+    PERFORM cron.unschedule('delete-expired-memos');
+EXCEPTION
+    WHEN OTHERS THEN
+        NULL; -- 스케줄이 없으면 무시
+END $$;
 
 -- 3. 5분마다 만료된 메모 자동 삭제
 SELECT cron.schedule(
