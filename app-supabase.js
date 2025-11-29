@@ -375,13 +375,9 @@ deleteKeyBtn.addEventListener('click', async () => {
         return;
     }
     
-    // 첫 번째 확인
-    const firstConfirm = confirm(`정말로 키 "${currentMemoPassword}"를 삭제하시겠습니까?\n\n메모 내용은 로컬에 남아있지만, Supabase의 공유 데이터는 삭제됩니다.`);
-    if (!firstConfirm) return;
-    
-    // 두 번째 확인
-    const secondConfirm = confirm('정말로 삭제하시겠습니까?\n이 작업은 되돌릴 수 없습니다!');
-    if (!secondConfirm) return;
+    // 확인
+    const confirmDelete = confirm(`키 "${currentMemoPassword}"를 삭제하시겠습니까?\n\n메모 내용은 로컬에 남아있지만, Supabase의 공유 데이터는 삭제됩니다.`);
+    if (!confirmDelete) return;
     
     try {
         const { error } = await supabase
