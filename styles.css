@@ -282,6 +282,56 @@ body[data-theme="dark"] .close-modal-btn:hover {
     text-align: center;
 }
 
+/* 글자 가리기 토글 */
+.hide-password-toggle {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    cursor: pointer;
+    user-select: none;
+}
+
+.hide-label {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.hide-password-toggle input[type="checkbox"] {
+    display: none;
+}
+
+.checkbox-custom {
+    width: 24px;
+    height: 24px;
+    border: 2px solid var(--input-border);
+    border-radius: 50%;
+    background: var(--input-bg);
+    position: relative;
+    transition: all 0.3s;
+    flex-shrink: 0;
+}
+
+.hide-password-toggle:hover .checkbox-custom {
+    border-color: #667eea;
+}
+
+.hide-password-toggle input[type="checkbox"]:checked + .checkbox-custom {
+    background: #667eea;
+    border-color: #667eea;
+}
+
+.hide-password-toggle input[type="checkbox"]:checked + .checkbox-custom::after {
+    content: '✓';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 14px;
+    font-weight: bold;
+}
+
 .info-box {
     margin-top: 30px;
     padding: 20px;
@@ -365,6 +415,10 @@ body[data-theme="dark"] .close-modal-btn:hover {
     cursor: pointer;
     transition: all 0.3s;
     letter-spacing: 0.5px;
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 body[data-theme="dark"] .key-button {
@@ -436,6 +490,17 @@ body[data-theme="dark"] .key-button:hover {
 .timer-button:hover {
     background: var(--button-hover);
     border-color: #667eea;
+}
+
+.timer-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    border-color: var(--input-border);
+}
+
+.timer-button:disabled:hover {
+    background: var(--button-bg);
+    border-color: var(--input-border);
 }
 
 /* 검색 바 (헤더 내부용) */
@@ -754,18 +819,13 @@ body[data-theme="dark"] .key-button:hover {
     font-size: 1rem;
     font-weight: 600;
     cursor: pointer;
-    transition: all 0.3s;
+    transition: border-color 0.3s, background 0.3s;
     color: var(--text-primary);
 }
 
 .duration-option:hover {
     background: var(--button-hover);
     border-color: #667eea;
-    transform: translateY(-2px);
-}
-
-.duration-option:active {
-    transform: translateY(0);
 }
 
 .delete-key-btn {
@@ -815,6 +875,19 @@ body[data-theme="dark"] .key-button:hover {
         margin: 10px 0;
     }
 
+    .key-section h2 {
+        font-size: 1.1rem;
+    }
+
+    .hide-label {
+        font-size: 0.7rem;
+    }
+
+    .checkbox-custom {
+        width: 20px;
+        height: 20px;
+    }
+
     .key-input-group {
         flex-direction: column;
     }
@@ -847,14 +920,23 @@ body[data-theme="dark"] .key-button:hover {
 
     .header-right {
         flex-direction: row;
-        justify-content: space-between;
+        justify-content: center;
         align-items: center;
         flex-wrap: nowrap;
+        gap: 12px;
     }
 
-    .password-info,
+    .password-info {
+        order: 1;
+    }
+
     .timer-info {
+        order: 2;
         flex-shrink: 0;
+    }
+
+    .theme-toggle {
+        order: 3;
     }
 
     .search-bar-inline {

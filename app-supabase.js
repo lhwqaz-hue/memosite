@@ -66,8 +66,12 @@ const searchInput = document.getElementById('search-input');
 const clearSearchBtn = document.getElementById('clear-search-btn');
 const searchCount = document.getElementById('search-count');
 const highlightLayer = document.getElementById('highlight-layer');
+const hidePasswordCheckbox = document.getElementById('hide-password-checkbox');
+const hideLoadPasswordCheckbox = document.getElementById('hide-load-password-checkbox');
 
 let currentMemoPassword = null;
+let isPasswordHidden = false;
+let isLoadPasswordHidden = false;
 let saveTimeout = null;
 let timerInterval = null;
 let expiresAt = null;
@@ -123,6 +127,27 @@ function updateThemeIcon() {
 
 themeToggle.addEventListener('click', toggleTheme);
 
+// 글자 가리기 토글 (키 설정)
+hidePasswordCheckbox.addEventListener('change', (e) => {
+    isPasswordHidden = e.target.checked;
+    
+    // 키 설정 입력창 타입 변경
+    setKeyInput.type = isPasswordHidden ? 'password' : 'text';
+    
+    // KEY 버튼 업데이트
+    if (currentMemoPassword) {
+        updateKeyButton(currentMemoPassword);
+    }
+});
+
+// 글자 가리기 토글 (키 불러오기)
+hideLoadPasswordCheckbox.addEventListener('change', (e) => {
+    isLoadPasswordHidden = e.target.checked;
+    
+    // 키 불러오기 입력창 타입 변경
+    loadKeyInput.type = isLoadPasswordHidden ? 'password' : 'text';
+});
+
 // 키 검증
 function validatePassword(password) {
     if (!password || password.trim().length < 4) {
@@ -131,12 +156,30 @@ function validatePassword(password) {
     return null;
 }
 
+// 키 버튼 텍스트 업데이트 (길이 제한)
+function updateKeyButton(password) {
+    if (isPasswordHidden) {
+        const dotCount = Math.min(password.length, 12);
+        keyButton.textContent = '•'.repeat(dotCount);
+        if (password.length > 12) {
+            keyButton.innerHTML = '•'.repeat(12) + '<span style="color: #ff8c00;">...</span>';
+        }
+        return;
+    }
+    
+    const maxLength = 12;
+    if (password.length > maxLength) {
+        const truncated = password.substring(0, maxLength);
+        keyButton.innerHTML = `${truncated}<span style="color: #ff8c00;">...</span>`;
+    } else {
+        keyButton.textContent = password;
+    }
+}
+
 // 타이머 업데이트
 function updateTimer() {
     if (!expiresAt || !currentMemoPassword) {
-        if (timerInfo) {
-            timerInfo.style.display = 'none';
-        }
+        timerButton.disabled = true;
         timerDisplay.textContent = '⏱️ --:--';
         return;
     }
@@ -165,9 +208,7 @@ function updateTimer() {
 }
 
 function startTimer() {
-    if (timerInfo) {
-        timerInfo.style.display = 'block';
-    }
+    timerButton.disabled = false;
     if (timerInterval) clearInterval(timerInterval);
     updateTimer();
     timerInterval = setInterval(updateTimer, 1000);
@@ -222,7 +263,7 @@ setKeyBtn.addEventListener('click', async () => {
         
         // 메모장 활성화
         currentMemoPassword = password;
-        keyButton.textContent = password;
+        updateKeyButton(password);
         memoEditor.placeholder = '여기에 메모를 작성하세요...';
         memoEditor.value = ''; // 새 키 생성 시 메모 내용 초기화
         lastSavedContent = '';
@@ -292,7 +333,7 @@ loadKeyBtn.addEventListener('click', async () => {
         }
         
         currentMemoPassword = password;
-        keyButton.textContent = password;
+        updateKeyButton(password);
         memoEditor.value = data.content || '';
         memoEditor.placeholder = '여기에 메모를 작성하세요...';
         lastSavedContent = memoEditor.value;
@@ -436,9 +477,7 @@ deleteKeyBtn.addEventListener('click', async () => {
             clearInterval(timerInterval);
             timerInterval = null;
         }
-        if (timerInfo) {
-            timerInfo.style.display = 'none';
-        }
+        timerButton.disabled = true;
         timerDisplay.textContent = '⏱️ --:--';
         expiresAt = null;
         
@@ -508,9 +547,7 @@ function resetApp() {
         clearInterval(timerInterval);
         timerInterval = null;
     }
-    if (timerInfo) {
-        timerInfo.style.display = 'none';
-    }
+    timerButton.disabled = true;
     timerDisplay.textContent = '⏱️ --:--';
     expiresAt = null;
     

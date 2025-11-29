@@ -35,8 +35,8 @@
             <div class="password-info">
                 <button id="key-button" class="key-button" title="클릭하여 키 설정/변경">KEY</button>
             </div>
-            <div class="timer-info" id="timer-info" style="display: none;">
-                <button id="timer-button" class="timer-button" title="클릭하여 유효시간 설정">
+            <div class="timer-info" id="timer-info">
+                <button id="timer-button" class="timer-button" title="클릭하여 유효시간 설정" disabled>
                     <span id="timer-display">⏱️ --:--</span>
                 </button>
             </div>
@@ -71,7 +71,14 @@
             
             <!-- 키 설정 영역 -->
             <div class="key-section">
-                <h2>🔑 새 키 설정</h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <h2 style="margin: 0;">🔑 새 키 설정</h2>
+                    <label class="hide-password-toggle" title="글자 가리기">
+                        <span class="hide-label">숨기기</span>
+                        <input type="checkbox" id="hide-password-checkbox">
+                        <span class="checkbox-custom"></span>
+                    </label>
+                </div>
                 <div class="key-input-group">
                     <input 
                         type="text" 
@@ -89,7 +96,14 @@
             
             <!-- 키 불러오기 영역 -->
             <div class="key-section">
-                <h2>📥 키 불러오기</h2>
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
+                    <h2 style="margin: 0;">📥 키 불러오기</h2>
+                    <label class="hide-password-toggle" title="글자 가리기">
+                        <span class="hide-label">숨기기</span>
+                        <input type="checkbox" id="hide-load-password-checkbox">
+                        <span class="checkbox-custom"></span>
+                    </label>
+                </div>
                 <div class="key-input-group">
                     <input 
                         type="text" 
