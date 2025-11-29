@@ -359,7 +359,7 @@ body[data-theme="dark"] .close-modal-btn:hover {
     font-weight: 600;
     color: #667eea;
     background: #f0f0f0;
-    padding: 8px 16px;
+    padding: 6px 16px;
     border: 2px solid #e0e0e0;
     border-radius: 8px;
     cursor: pointer;
@@ -501,12 +501,20 @@ body[data-theme="dark"] .key-button:hover {
     flex-shrink: 0;
 }
 
+.search-nav-group {
+    display: flex;
+    border: none;
+    border-radius: 0;
+    overflow: visible;
+}
+
 .search-nav-btn {
-    background: var(--button-bg);
-    border: 1px solid var(--input-border);
+    background: transparent;
+    border: none;
+    border-right: 1px solid #667eea;
     width: 28px;
     height: 28px;
-    border-radius: 4px;
+    border-radius: 0;
     cursor: pointer;
     font-size: 0.7rem;
     display: flex;
@@ -518,18 +526,22 @@ body[data-theme="dark"] .key-button:hover {
     padding: 0;
 }
 
+.search-nav-btn:last-child {
+    border-right: none;
+}
+
 .search-nav-btn:hover {
     background: var(--button-hover);
     color: var(--text-primary);
-    border-color: #667eea;
 }
 
 .clear-btn {
     background: transparent;
-    border: 1px solid var(--input-border);
+    border: none;
+    border-left: 1px solid #667eea;
     width: 28px;
     height: 28px;
-    border-radius: 4px;
+    border-radius: 0;
     cursor: pointer;
     font-size: 0.9rem;
     display: flex;
@@ -539,12 +551,11 @@ body[data-theme="dark"] .key-button:hover {
     color: var(--text-secondary);
     flex-shrink: 0;
     padding: 0;
+    margin-left: 4px;
 }
 
 .clear-btn:hover {
-    background: var(--button-hover);
     color: var(--text-primary);
-    border-color: #667eea;
 }
 
 .memo-container {
