@@ -502,13 +502,13 @@ body[data-theme="dark"] .key-button:hover {
 }
 
 .search-nav-btn {
-    background: transparent;
+    background: var(--button-bg);
     border: 1px solid var(--input-border);
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 0.65rem;
+    font-size: 0.7rem;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -527,11 +527,11 @@ body[data-theme="dark"] .key-button:hover {
 .clear-btn {
     background: transparent;
     border: 1px solid var(--input-border);
-    width: 24px;
-    height: 24px;
+    width: 28px;
+    height: 28px;
     border-radius: 4px;
     cursor: pointer;
-    font-size: 0.85rem;
+    font-size: 0.9rem;
     display: flex;
     align-items: center;
     justify-content: center;

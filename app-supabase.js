@@ -396,15 +396,16 @@ deleteKeyBtn.addEventListener('click', async () => {
         
         showToast('키가 삭제되었습니다');
         
-        // KEY 버튼으로 초기화
+        // KEY 버튼으로 초기화 (메모 내용은 유지)
         currentMemoPassword = null;
         keyButton.textContent = 'KEY';
         memoEditor.placeholder = '여기에 메모를 작성하세요...';
-        memoEditor.value = '';
-        updateCharCount('');
+        // memoEditor.value는 그대로 유지
         
-        // 로컬 저장소 정리
-        localStorage.removeItem('localMemo');
+        // 로컬에 현재 내용 저장
+        if (content) {
+            localStorage.setItem('localMemo', content);
+        }
         
         if (timerInterval) {
             clearInterval(timerInterval);
