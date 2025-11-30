@@ -1164,6 +1164,7 @@ body[data-theme="dark"] .find-highlight {
         align-items: center;
         justify-content: center;
         margin-left: auto;
+        padding-right: 0;
     }
 
     .password-info {

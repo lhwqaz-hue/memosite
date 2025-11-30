@@ -147,11 +147,10 @@ searchToggleBtn.addEventListener('click', () => {
     }
 });
 
-// 모바일에서 초기 상태를 collapsed로 설정
+// 모바일에서 초기 상태는 펼쳐진 상태
 if (window.innerWidth <= 768) {
-    headerLeft.classList.add('collapsed');
-    searchToggleBtn.textContent = '▼';
-    searchToggleBtn.title = '검색 표시';
+    searchToggleBtn.textContent = '▲';
+    searchToggleBtn.title = '검색 숨김';
 }
 
 // 글자 가리기 토글 (키 설정)
