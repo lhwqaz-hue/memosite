@@ -569,47 +569,6 @@ let highlightedMatches = [];
 let currentHighlightIndex = 0;
 const findCount = document.getElementById('find-count');
 
-// 찾을 단어 입력 시 하이라이트
-findInput.addEventListener('input', () => {
-    const findText = findInput.value;
-    
-    if (!findText) {
-        // 입력이 비어있으면 하이라이트 제거
-        removeHighlights();
-        highlightedMatches = [];
-        findCount.textContent = '';
-        return;
-    }
-    
-    const currentContent = memoEditor.value;
-    const regex = new RegExp(findText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
-    const matches = [...currentContent.matchAll(regex)];
-    
-    if (matches.length > 0) {
-        highlightedMatches = matches;
-        findCount.textContent = `${matches.length}개`;
-        
-        // 하이라이트 적용
-        highlightMatches(findText);
-        
-        // 첫 번째 매치 스크롤 (포커스를 빼앗지 않도록 setTimeout 사용)
-        setTimeout(() => {
-            const firstMatch = matches[0];
-            const currentFocus = document.activeElement;
-            if (currentFocus === findInput || currentFocus === replaceInput) {
-                // 입력창에 포커스가 있으면 선택하지 않음
-                return;
-            }
-            memoEditor.setSelectionRange(firstMatch.index, firstMatch.index + firstMatch[0].length);
-            memoEditor.scrollTop = Math.max(0, (firstMatch.index / currentContent.length) * memoEditor.scrollHeight - memoEditor.clientHeight / 2);
-        }, 0);
-    } else {
-        highlightedMatches = [];
-        findCount.textContent = '0개';
-        removeHighlights();
-    }
-});
-
 // 하이라이트 적용 함수
 function highlightMatches(searchText) {
     removeHighlights();
@@ -649,6 +608,47 @@ memoEditor.addEventListener('scroll', () => {
     const highlightLayer = document.querySelector('.highlight-layer');
     if (highlightLayer) {
         highlightLayer.scrollTop = memoEditor.scrollTop;
+    }
+});
+
+// 찾을 단어 입력 시 하이라이트
+findInput.addEventListener('input', () => {
+    const findText = findInput.value;
+    
+    if (!findText) {
+        // 입력이 비어있으면 하이라이트 제거
+        removeHighlights();
+        highlightedMatches = [];
+        findCount.textContent = '';
+        return;
+    }
+    
+    const currentContent = memoEditor.value;
+    const regex = new RegExp(findText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+    const matches = [...currentContent.matchAll(regex)];
+    
+    if (matches.length > 0) {
+        highlightedMatches = matches;
+        findCount.textContent = `${matches.length}개`;
+        
+        // 하이라이트 적용
+        highlightMatches(findText);
+        
+        // 첫 번째 매치 스크롤 (포커스를 빼앗지 않도록 setTimeout 사용)
+        setTimeout(() => {
+            const firstMatch = matches[0];
+            const currentFocus = document.activeElement;
+            if (currentFocus === findInput || currentFocus === replaceInput) {
+                // 입력창에 포커스가 있으면 선택하지 않음
+                return;
+            }
+            memoEditor.setSelectionRange(firstMatch.index, firstMatch.index + firstMatch[0].length);
+            memoEditor.scrollTop = Math.max(0, (firstMatch.index / currentContent.length) * memoEditor.scrollHeight - memoEditor.clientHeight / 2);
+        }, 0);
+    } else {
+        highlightedMatches = [];
+        findCount.textContent = '0개';
+        removeHighlights();
     }
 });
 
