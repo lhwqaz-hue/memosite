@@ -62,10 +62,10 @@ const saveStatus = document.getElementById('save-status');
 const charCount = document.getElementById('char-count');
 const charCountNoSpace = document.getElementById('char-count-no-space');
 
-const searchInput = document.getElementById('search-input');
-const clearSearchBtn = document.getElementById('clear-search-btn');
-const searchCount = document.getElementById('search-count');
-const highlightLayer = document.getElementById('highlight-layer');
+const findInput = document.getElementById('find-input');
+const replaceInput = document.getElementById('replace-input');
+const replaceBtn = document.getElementById('replace-btn');
+const undoBtn = document.getElementById('undo-btn');
 const hidePasswordCheckbox = document.getElementById('hide-password-checkbox');
 const hideLoadPasswordCheckbox = document.getElementById('hide-load-password-checkbox');
 
@@ -76,9 +76,12 @@ let saveTimeout = null;
 let timerInterval = null;
 let expiresAt = null;
 let lastSavedContent = '';
-let searchMatches = [];
-let currentMatchIndex = -1;
 let selectedDuration = 30; // 기본 30분
+
+// 실행취소 히스토리
+let undoHistory = [];
+let isUndoing = false;
+const MAX_HISTORY = 50;
 
 // 토스트 알림 함수
 function showToast(message) {
@@ -364,10 +367,12 @@ memoEditor.addEventListener('input', () => {
     const content = memoEditor.value;
     updateCharCount(content);
     
-    // 검색 중이면 하이라이트 업데이트
-    const searchTerm = searchInput.value;
-    if (searchTerm) {
-        highlightSearchText(content, searchTerm);
+    // 실행취소 히스토리에 추가 (실행취소 중이 아닐 때만)
+    if (!isUndoing && (undoHistory.length === 0 || undoHistory[undoHistory.length - 1] !== content)) {
+        undoHistory.push(content);
+        if (undoHistory.length > MAX_HISTORY) {
+            undoHistory.shift();
+        }
     }
     
     if (!currentMemoPassword) {
@@ -554,120 +559,158 @@ function resetApp() {
     saveStatus.textContent = '';
 }
 
-// 검색 기능
-function highlightSearchText(text, searchTerm) {
-    if (!searchTerm || searchTerm.length === 0) {
-        highlightLayer.innerHTML = '';
-        searchCount.textContent = '';
-        searchMatches = [];
-        currentMatchIndex = -1;
+// 단어 일괄 수정 기능
+let highlightedMatches = [];
+let currentHighlightIndex = 0;
+const findCount = document.getElementById('find-count');
+
+// 찾을 단어 입력 시 하이라이트
+findInput.addEventListener('input', () => {
+    const findText = findInput.value;
+    
+    if (!findText) {
+        // 입력이 비어있으면 하이라이트 제거
+        memoEditor.style.background = 'transparent';
+        highlightedMatches = [];
+        findCount.textContent = '';
         return;
     }
     
-    try {
-        const regex = new RegExp(searchTerm.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
-        const matches = [...text.matchAll(regex)];
-        searchMatches = matches.map(m => m.index);
+    const currentContent = memoEditor.value;
+    const regex = new RegExp(findText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'gi');
+    const matches = [...currentContent.matchAll(regex)];
+    
+    if (matches.length > 0) {
+        highlightedMatches = matches;
+        findCount.textContent = `${matches.length}개`;
         
-        if (matches.length === 0) {
-            highlightLayer.innerHTML = '';
-            searchCount.textContent = '0/0';
-            currentMatchIndex = -1;
+        // 첫 번째 매치 선택 (포커스를 빼앗지 않도록 setTimeout 사용)
+        setTimeout(() => {
+            const firstMatch = matches[0];
+            const currentFocus = document.activeElement;
+            if (currentFocus === findInput || currentFocus === replaceInput) {
+                // 입력창에 포커스가 있으면 선택하지 않음
+                return;
+            }
+            memoEditor.setSelectionRange(firstMatch.index, firstMatch.index + firstMatch[0].length);
+        }, 0);
+    } else {
+        highlightedMatches = [];
+        findCount.textContent = '0개';
+    }
+});
+
+replaceBtn.addEventListener('click', () => {
+    const findText = findInput.value;
+    const replaceText = replaceInput.value;
+    
+    if (!findText) {
+        showToast('찾을 단어를 입력하세요');
+        return;
+    }
+    
+    // 바꿀 단어가 비어있으면 확인 요청
+    if (!replaceText) {
+        if (!confirm('바꿀 단어가 비어있습니다.\n찾은 단어를 모두 지우시겠습니까?')) {
             return;
         }
-        
-        let highlightedText = text.replace(regex, match => {
-            return `<mark>${match}</mark>`;
-        });
-        
-        highlightedText = highlightedText.replace(/\n/g, '<br>');
-        highlightLayer.innerHTML = highlightedText;
-        
-        currentMatchIndex = 0;
-        searchCount.textContent = `1/${matches.length}`;
-        scrollToMatch(0);
-        
-    } catch (e) {
-        console.error('Highlight error:', e);
     }
-}
-
-function scrollToMatch(index) {
-    if (searchMatches.length === 0) return;
     
-    const marks = highlightLayer.querySelectorAll('mark');
-    if (marks[index]) {
-        marks.forEach((m, i) => {
-            if (i === index) {
-                m.style.backgroundColor = '#ff6b6b';
-                m.style.color = 'white';
-            } else {
-                m.style.backgroundColor = '#ffd43b';
-                m.style.color = 'black';
-            }
-        });
-        
-        const markRect = marks[index].getBoundingClientRect();
-        const containerRect = memoEditor.getBoundingClientRect();
-        const scrollTop = memoEditor.scrollTop;
-        const offset = markRect.top - containerRect.top + scrollTop - 100;
-        
-        memoEditor.scrollTop = offset;
+    const currentContent = memoEditor.value;
+    const regex = new RegExp(findText.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g');
+    const matches = currentContent.match(regex);
+    
+    if (!matches || matches.length === 0) {
+        showToast('찾을 단어가 없습니다');
+        return;
     }
-}
-
-function navigateSearch(direction) {
-    if (searchMatches.length === 0) return;
     
-    if (direction === 'down') {
-        currentMatchIndex = (currentMatchIndex + 1) % searchMatches.length;
+    const newContent = currentContent.replace(regex, replaceText);
+    
+    // 히스토리에 변경 전 상태 저장
+    if (undoHistory.length === 0 || undoHistory[undoHistory.length - 1] !== currentContent) {
+        undoHistory.push(currentContent);
+        if (undoHistory.length > MAX_HISTORY) {
+            undoHistory.shift();
+        }
+    }
+    
+    // 변경 후 상태도 히스토리에 추가
+    undoHistory.push(newContent);
+    if (undoHistory.length > MAX_HISTORY) {
+        undoHistory.shift();
+    }
+    
+    memoEditor.value = newContent;
+    updateCharCount(newContent);
+    
+    // 자동 저장
+    if (currentMemoPassword) {
+        saveMemo(newContent);
     } else {
-        currentMatchIndex = (currentMatchIndex - 1 + searchMatches.length) % searchMatches.length;
+        localStorage.setItem('localMemo', newContent);
+        saveStatus.textContent = '로컬 저장됨';
     }
     
-    searchCount.textContent = `${currentMatchIndex + 1}/${searchMatches.length}`;
-    scrollToMatch(currentMatchIndex);
-}
-
-// 검색 네비게이션 버튼
-const searchPrevBtn = document.getElementById('search-prev-btn');
-const searchNextBtn = document.getElementById('search-next-btn');
-
-searchPrevBtn.addEventListener('click', () => {
-    navigateSearch('up');
+    showToast(`${matches.length}개 항목 변경됨`);
+    
+    // 입력창 초기화
+    findInput.value = '';
+    replaceInput.value = '';
+    findCount.textContent = '';
+    highlightedMatches = [];
 });
 
-searchNextBtn.addEventListener('click', () => {
-    navigateSearch('down');
+// 실행취소 기능
+undoBtn.addEventListener('click', () => {
+    if (undoHistory.length <= 1) {
+        showToast('실행취소할 내용이 없습니다');
+        return;
+    }
+    
+    isUndoing = true;
+    undoHistory.pop(); // 현재 상태 제거
+    const previousContent = undoHistory[undoHistory.length - 1];
+    
+    memoEditor.value = previousContent;
+    updateCharCount(previousContent);
+    
+    // 자동 저장
+    if (currentMemoPassword) {
+        saveMemo(previousContent);
+    } else {
+        localStorage.setItem('localMemo', previousContent);
+        saveStatus.textContent = '로컬 저장됨';
+    }
+    
+    showToast('실행취소됨');
+    
+    setTimeout(() => {
+        isUndoing = false;
+    }, 100);
 });
 
-searchInput.addEventListener('input', (e) => {
-    const searchTerm = e.target.value;
-    const text = memoEditor.value;
-    highlightSearchText(text, searchTerm);
-});
-
-searchInput.addEventListener('keydown', (e) => {
-    if (e.key === 'ArrowDown') {
+// Ctrl+Z 키보드 단축키
+document.addEventListener('keydown', (e) => {
+    if (e.ctrlKey && e.key === 'z' && !e.shiftKey) {
         e.preventDefault();
-        navigateSearch('down');
-    } else if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        navigateSearch('up');
+        undoBtn.click();
     }
 });
 
-clearSearchBtn.addEventListener('click', () => {
-    searchInput.value = '';
-    highlightLayer.innerHTML = '';
-    searchCount.textContent = '';
-    searchMatches = [];
-    currentMatchIndex = -1;
+// 엔터 키로 수정 실행
+findInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        replaceInput.focus();
+    }
 });
 
-memoEditor.addEventListener('scroll', () => {
-    highlightLayer.scrollTop = memoEditor.scrollTop;
-    highlightLayer.scrollLeft = memoEditor.scrollLeft;
+replaceInput.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter') {
+        e.preventDefault();
+        replaceBtn.click();
+    }
 });
 
 // URL 파라미터에서 키 로드

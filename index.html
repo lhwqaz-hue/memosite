@@ -13,22 +13,28 @@
     <div class="header">
         <div class="header-left">
             <h1 class="logo">krople Memo</h1>
-            <!-- 검색 바 -->
-            <div class="search-bar-inline">
-                <input 
-                    type="text" 
-                    id="search-input" 
-                    placeholder="검색..."
-                    autocomplete="off"
-                >
-                <div class="search-controls">
-                    <span id="search-count" class="search-count"></span>
-                    <div class="search-nav-group">
-                        <button id="search-prev-btn" class="search-nav-btn" title="이전 (↑)">▲</button>
-                        <button id="search-next-btn" class="search-nav-btn" title="다음 (↓)">▼</button>
-                    </div>
+            <!-- 단어 일괄 수정 -->
+            <div class="replace-bar-inline">
+                <div class="find-input-wrapper">
+                    <input 
+                        type="text" 
+                        id="find-input" 
+                        placeholder="찾을 단어..."
+                        autocomplete="off"
+                    >
+                    <span id="find-count" class="find-count"></span>
                 </div>
-                <button id="clear-search-btn" class="clear-btn" title="검색 지우기">✕</button>
+                <span class="replace-arrow">→</span>
+                <div class="replace-input-wrapper">
+                    <input 
+                        type="text" 
+                        id="replace-input" 
+                        placeholder="바꿀 단어..."
+                        autocomplete="off"
+                    >
+                </div>
+                <button id="replace-btn" class="replace-btn" title="모두 바꾸기">바꾸기</button>
+                <button id="undo-btn" class="undo-btn" title="실행취소 (Ctrl+Z)">↶</button>
             </div>
         </div>
         <div class="header-right">
@@ -45,7 +51,6 @@
     </div>
     
     <div class="memo-container">
-        <div id="highlight-layer" class="highlight-layer"></div>
         <textarea 
             id="memo-editor" 
             placeholder="여기에 메모를 작성하세요..."
