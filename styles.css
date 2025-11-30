@@ -601,6 +601,8 @@ body[data-theme="dark"] .key-button:hover {
 
 .replace-btn-icon {
     right: 38px;
+    border-right: 1px solid var(--input-border);
+    padding-right: 8px;
 }
 
 .undo-btn-icon {
@@ -1161,7 +1163,6 @@ body[data-theme="dark"] .find-highlight {
         display: flex;
         align-items: center;
         justify-content: center;
-        order: 4;
     }
 
     .password-info {
@@ -1226,6 +1227,8 @@ body[data-theme="dark"] .find-highlight {
 
     .replace-btn-icon {
         right: 34px;
+        border-right: 1px solid var(--input-border);
+        padding-right: 6px;
     }
 
     .undo-btn-icon {
