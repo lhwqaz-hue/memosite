@@ -1063,9 +1063,7 @@ body[data-theme="dark"] .find-highlight {
         align-items: flex-start;
         gap: 0;
         padding: 0;
-        position: sticky;
-        top: 0;
-        z-index: 100;
+        position: relative;
         background: var(--header-bg);
     }
 
@@ -1075,6 +1073,7 @@ body[data-theme="dark"] .find-highlight {
         gap: 8px;
         padding: 10px 15px 8px 15px;
         order: 1;
+        background: var(--header-bg);
     }
 
     .header-right {
@@ -1088,6 +1087,9 @@ body[data-theme="dark"] .find-highlight {
         order: 3;
         background: var(--header-bg);
         box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        position: sticky;
+        top: 0;
+        z-index: 100;
     }
 
     .logo {
@@ -1120,6 +1122,7 @@ body[data-theme="dark"] .find-highlight {
         align-items: stretch;
         order: 2;
         padding: 0 15px 8px 15px;
+        background: var(--header-bg);
     }
 
     .find-input-wrapper {
